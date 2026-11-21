@@ -51,17 +51,52 @@ footer strong{color:var(--g)}
 @media (prefers-reduced-motion:reduce){.body{animation:none}summary{transition:none}}
 @media (prefers-reduced-transparency:reduce){header{background:var(--g)}.card,footer{background:#f4f6f5;-webkit-backdrop-filter:none;backdrop-filter:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){header{background:var(--g)}.card,footer{background:rgba(255,255,255,.92)}}
+.team{border:0;font-family:inherit;cursor:pointer}
+.team:active{transform:scale(.97)}
+.team:focus-visible{outline:3px solid #fff;outline-offset:3px}
+dialog{width:min(92vw,520px);margin:auto;padding:0;border:1px solid rgba(255,255,255,.55);border-radius:26px;color:var(--tx);background:linear-gradient(135deg,rgba(255,255,255,.84),rgba(255,255,255,.6));-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.8),0 20px 60px rgba(7,30,21,.4)}
+dialog::backdrop{background:rgba(10,30,22,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+dialog[open]{animation:p .25s ease-out}
+@keyframes p{from{opacity:0;transform:scale(.94)}}
+.in{padding:22px 22px 20px}
+.lang{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:99px;background:rgba(31,77,58,.14);border:1px solid rgba(255,255,255,.55);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);box-shadow:inset 0 1px 3px rgba(7,30,21,.2),inset 0 -1px 0 rgba(255,255,255,.6);-webkit-tap-highlight-color:transparent}
+.lang button{position:relative;z-index:1;width:92px;font:inherit;font-size:14px;font-weight:700;border:0;background:none;color:var(--mu);padding:6px 0;border-radius:99px;cursor:pointer;transition:color .25s}
+.lang button[aria-pressed=true]{color:var(--g)}
+.lang button:focus-visible{outline:2px solid var(--g2);outline-offset:1px}
+.lang[data-v=en]{--x:92px}
+.thumb{position:absolute;top:4px;bottom:4px;left:4px;width:92px;border-radius:99px;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,255,255,.64));-webkit-backdrop-filter:blur(10px) saturate(190%);backdrop-filter:blur(10px) saturate(190%);box-shadow:inset 0 1.5px 0 #fff,inset 0 -1px 1px rgba(31,77,58,.2),0 3px 10px rgba(7,30,21,.28);transform:translateX(var(--x,0)) scale(var(--s,1));transition:transform .45s cubic-bezier(.34,1.56,.64,1),background .2s}
+.lang:active{--s:1.1}
+.lang:active .thumb{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.4))}
+.in h2{margin-top:14px;font-size:22px;color:var(--g);letter-spacing:.04em}
+.in p{margin-top:8px;font-size:15px;line-height:1.8}
+.x{display:block;width:100%;margin-top:18px;font:inherit;font-weight:700;color:#fff;background:linear-gradient(180deg,#2f6b50,#1f4d3a);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:12px;cursor:pointer}
+@media (prefers-reduced-motion:reduce){dialog[open]{animation:none}.thumb{transition:none}}
+@media (prefers-reduced-transparency:reduce){dialog{background:#f4f6f5;-webkit-backdrop-filter:none;backdrop-filter:none}.thumb,.lang:active .thumb{background:#fff}}
 </style>
 </head>
 <body>
 <header>
-  <div class="team">D2车队</div>
+  <button class="team" id="teamBtn" aria-haspopup="dialog">D2车队</button>
   <h1>北京骑行路线集</h1>
   <p>北京骑友爬坡路线汇总</p>
   <a class="strava" href="https://www.strava.com" target="_blank" rel="noopener">前往 Strava ↗</a>
 </header>
 <main id="list"></main>
 <footer><strong>安全提示：</strong>路线里程、爬升为骑友路书参考值，仅供参考；骑行务必佩戴头盔，注意观察大车弯道，遵守交通法规，量力而行。</footer>
+<dialog id="team" aria-label="D2车队介绍 / About D2 Cycling Team"><div class="in">
+<div class="lang" data-v="zh" role="group" aria-label="语言 / Language"><i class="thumb" aria-hidden="true"></i><button data-l="zh" aria-pressed="true">中文</button><button data-l="en" aria-pressed="false">English</button></div>
+<section data-t="zh" lang="zh-CN"><h2>D2车队介绍</h2>
+<p>D2车队成立于2026年6月，是车友自发组建的公路骑行小团体。车队战车包含Cannondale SuperSix、Specialized Tarmac SL8、喜德盛X-LAB RS9。我们兼顾竞速拉练与休闲约骑，氛围轻松友好，拒绝内卷。依托本路线站点方便大家约骑打卡，后续支持Strava同步骑行数据，欢迎热爱骑行的伙伴结伴同行。</p></section>
+<section data-t="en" lang="en" hidden><h2>About D2 Cycling Team</h2>
+<p>D2 Cycling Team was founded in June 2026 as a small, self-organized group of road cycling friends. Our bikes include the Cannondale SuperSix, the Specialized Tarmac SL8 and the Xidesheng (XDS) X-LAB RS9. We balance race-pace training with relaxed social rides, in a friendly, easy-going atmosphere with no rat race. This route site makes it easy to plan rides and check in together, and Strava ride-data syncing is coming soon. Cycling lovers are welcome to ride with us.</p></section>
+<button class="x" data-x>关闭 / Close</button>
+</div></dialog>
+<script>
+const dlg=document.getElementById("team");
+document.getElementById("teamBtn").onclick=()=>dlg.showModal?dlg.showModal():dlg.setAttribute("open","");
+dlg.addEventListener("click",e=>{if(e.target===dlg||e.target.closest("[data-x]"))dlg.close()});
+dlg.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{b.parentNode.dataset.v=b.dataset.l;dlg.querySelectorAll("[data-l]").forEach(x=>x.setAttribute("aria-pressed",x===b));dlg.querySelectorAll("[data-t]").forEach(t=>t.hidden=t.dataset.t!==b.dataset.l)});
+</script>
 <script>
 const R=[
 {n:"戒台寺",km:"4.7km（单程）",up:"213m",g:"约4.5%",lv:"中级",d:2,intro:"弯道密集的京西入门爬坡，适合练爬升节奏。",
