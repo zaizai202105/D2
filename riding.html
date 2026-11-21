@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>北京骑行路线集</title>
+<meta name="description" content="北京骑友爬坡路线汇总：戒台寺、妙峰山、潭王路、小老鼠、大杨山、红井路、黑峪口等经典路线。">
+<style>
+:root{--g:#1f4d3a;--g2:#2f6b50;--bg:#eceeed;--card:#fff;--tx:#1b2a23;--mu:#5d6b64;--ln:#d6dbd8}
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.65 -apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;background:var(--bg);color:var(--tx);-webkit-text-size-adjust:100%}
+header{background:var(--g);color:#fff;padding:36px 20px 28px;text-align:center}
+h1{font-size:30px;letter-spacing:.12em;font-weight:800}
+header p{margin-top:6px;font-size:15px;color:#c8dccf;letter-spacing:.08em}
+.team{display:inline-block;background:var(--bg);color:var(--g);font-weight:800;font-size:16px;letter-spacing:.12em;padding:3px 16px;border-radius:99px;margin-bottom:12px}
+main{max-width:680px;margin:0 auto;padding:16px 14px 8px}
+.card{background:var(--card);border-radius:12px;margin-bottom:12px;border-left:6px solid var(--g);overflow:hidden}
+.card.d1{border-color:#8fb89f}.card.d2{border-color:#4f8a69}.card.d3{border-color:#2f6b50}.card.d4{border-color:#12301f}
+summary{list-style:none;cursor:pointer;padding:14px 16px;display:block}
+summary::-webkit-details-marker{display:none}
+summary:focus-visible,.btn:focus-visible{outline:3px solid #7fb394;outline-offset:-3px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.name{font-size:20px;font-weight:700}
+.lv{font-size:13px;font-weight:600;padding:2px 10px;border-radius:99px;background:#e3ede7;color:var(--g);white-space:nowrap}
+.d4 .lv{background:var(--g);color:#fff}
+.stats{display:flex;flex-wrap:wrap;gap:6px 20px;margin:8px 0 4px}
+.stats b{display:block;font-size:19px;color:var(--g);line-height:1.3}
+.stats span{font-size:12px;color:var(--mu)}
+.intro{font-size:14px;color:var(--mu)}
+.more{font-size:13px;color:var(--g2);margin-top:8px}
+.more::after{content:"展开详情 ▾"}
+details[open] .more::after{content:"收起 ▴"}
+.body{padding:2px 16px 16px;border-top:1px solid var(--ln);animation:o .2s ease-out}
+@keyframes o{from{opacity:0;transform:translateY(-4px)}}
+dl{margin:10px 0 14px}
+dt{font-size:13px;font-weight:700;color:var(--g);margin-top:10px}
+dd{font-size:15px}
+.risk{background:#f1f3f2;border-radius:8px;padding:8px 12px;margin-top:2px}
+.btn{display:block;text-align:center;background:var(--g);color:#fff;text-decoration:none;font-weight:700;padding:12px;border-radius:10px}
+.btn:active{background:var(--g2)}
+footer{max-width:680px;margin:8px auto 0;padding:16px 18px 36px;font-size:13px;line-height:1.7;color:var(--mu);border-top:1px solid var(--ln)}
+footer strong{color:var(--g)}
+@media (prefers-reduced-motion:reduce){.body{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="team">D2车队</div>
+  <h1>北京骑行路线集</h1>
+  <p>北京骑友爬坡路线汇总</p>
+</header>
+<main id="list"></main>
+<footer><strong>安全提示：</strong>路线里程、爬升为骑友路书参考值，仅供参考；骑行务必佩戴头盔，注意观察大车弯道，遵守交通法规，量力而行。</footer>
+<script>
+const R=[
+{n:"戒台寺",km:"4.7km（单程）",up:"213m",g:"约4.5%",lv:"中级",d:2,intro:"弯道密集的京西入门爬坡，适合练爬升节奏。",
+ s:"戒台寺牌楼",e:"戒台寺",t:"上行约30–50分钟",r:"以柏油路为主，弯道多，坡度有起伏。",
+ u:"戒台寺停车场（补给点）",k:"弯道密集，下坡注意控速；节假日游客车多，留意横穿行人和大巴。",q:"戒台寺牌楼"},
+{n:"妙峰山",km:"19.7km（单程）",up:"871m",g:"约4.4%",lv:"硬核",d:4,intro:"长距离持续爬坡，北京最经典的硬核爬坡之一。",
+ s:"涧沟村牌楼",e:"妙峰山景区山顶",t:"上行约2–3小时，往返约4–5小时",r:"柏油路，持续爬坡，后半段坡度和海拔感明显。",
+ u:"路线较长，出发前备足水和能量补给，沿途补给点有限。",k:"后半段大车较多，弯道注意观察；下山路长，注意控速和刹车发热；山上温差大，备风衣。",q:"涧沟村牌楼"},
+{n:"潭王路",km:"26km（单程）",up:"约520–560m",lv:"中级",d:2,intro:"路面平整的京西经典线，沿途农家院和咖啡好补给。",
+ s:"潭柘寺南辛房村",e:"王平方向",t:"单程约1.5–2小时",r:"路面整体平整，适合稳定节奏骑行。",
+ u:"沿途有农家院、咖啡店可补给。",k:"路段有车辆往来，注意弯道和大车；半途补给点需提前规划。",q:"南辛房村"},
+{n:"小老鼠",km:"68km",up:"约950m",lv:"进阶",d:3,intro:"京西小老鼠环线，串联戒台寺与潭王路的经典环线。",
+ s:"首钢大桥",e:"首钢大桥（环线）",t:"约4.5–6小时",r:"起伏路加两段爬坡，路况以柏油为主。",
+ u:"潭柘寺环岛、紫旸山庄、王平。",k:"全程较长，注意体能分配；部分路段车流大，爬坡和下坡都要控速。",q:"首钢大桥"},
+{n:"大杨山环线",km:"主爬坡约14.4km；完整环线约40–100km",up:"主爬坡约285m",lv:"中级偏休闲",d:2,intro:"林荫多、坡度平缓，适合轻松骑行。",
+ s:"大杨山森林公园门口（静之湖/兴寿方向）",e:"可原路返回，或按需绕环线",t:"视绕法，约2–5小时",r:"林荫路多、坡度平缓，部分乡道路面破损。",
+ u:"百合村可补水补给。",k:"乡道破损处注意坑洼和落叶；环线路线灵活，出发前确认绕法和补给。",q:"大杨山森林公园"},
+{n:"天线小老鼠",km:"115km",up:"1900m",lv:"硬核",d:4,intro:"戒台寺、潭王路、妙峰山三连爬，强度很大。",
+ s:"首钢大桥",e:"首钢大桥（环线）",t:"约7–10小时",r:"在小老鼠基础上向北延伸妙峰山，路况多变。",
+ u:"需带足补给；可参考小老鼠沿线补给点。",k:"距离长、爬升大，务必量力而行；妙峰山段大车多，注意体能和日落时间。",q:"首钢大桥"},
+{n:"红井路",km:"约19km（单程）",up:"约650m",lv:"中级",d:2,intro:"连续发卡弯，节奏感强，但弯道视野差。",
+ s:"红井路口",e:"红井路山顶方向",t:"上行约1.5–2.5小时",r:"柏油路，连续发卡弯，坡度变化较多。",
+ u:"补给点较少，出发前备好水和补给。",k:"弯道视野差，注意对向车辆，下坡严格控速，不要压线。",q:"红井路"},
+{n:"黑峪口",km:"爬坡段约5km",up:"约300m",lv:"入门到中级",d:1,intro:"昌赤路·燕山天池坡，坡度先紧后缓，垭口可远眺水库。",
+ s:"黑峪口村路口",e:"垭口，可放坡至白河堡水库（燕山天池）",t:"上行约30–50分钟",r:"正规公路，路况较好。",
+ u:"路程短，自备水即可；可前往白河堡水库休息补给。",k:"前段坡度较陡，起步控制节奏；放坡时注意车辆和弯道。",q:"黑峪口村"}
+];
+const L=document.getElementById("list");
+L.innerHTML=R.map(x=>`<details class="card d${x.d}"><summary>
+<div class="top"><span class="name">${x.n}</span><span class="lv">${x.lv}</span></div>
+<div class="stats"><div><b>${x.km}</b><span>总里程</span></div><div><b>${x.up}</b><span>累计爬升</span></div>${x.g?`<div><b>${x.g}</b><span>平均坡度</span></div>`:""}</div>
+<p class="intro">${x.intro}</p><p class="more"></p></summary>
+<div class="body"><dl>
+<dt>起点位置</dt><dd>${x.s}</dd><dt>终点位置</dt><dd>${x.e}</dd>
+<dt>预计骑行时长</dt><dd>${x.t}</dd><dt>路面情况</dt><dd>${x.r}</dd>
+<dt>沿途补给点位</dt><dd>${x.u}</dd><dt>骑行风险和注意事项</dt><dd class="risk">${x.k}</dd></dl>
+<a class="btn" target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${encodeURIComponent(x.q)}&city=%E5%8C%97%E4%BA%AC">高德地图导航到起点</a></div></details>`).join("");
+L.addEventListener("toggle",e=>{if(e.target.open)L.querySelectorAll("details[open]").forEach(d=>{if(d!==e.target)d.open=false})},true);
+</script>
+</body>
+</html>
