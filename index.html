@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#123b2c"><title>D2 Cycling｜Liquid Glass 骑行数据</title>
+<style>
+:root{--g:#174b36;--g2:#2d7653;--ink:#14291f;--muted:#63756b;--line:#dce7df;--bg:#edf3ef;--orange:#e96827;--glass:rgba(255,255,255,.82)}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#e9f2ec,#dce9e1 48%,#eef1ed);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;padding:env(safe-area-inset-top) 14px calc(24px + env(safe-area-inset-bottom))}
+.wrap{max-width:1000px;margin:auto}.hero{background:linear-gradient(130deg,#123b2c,#276747);color:white;border-radius:25px;padding:25px 22px;margin:12px auto 15px;box-shadow:0 14px 34px #173e2d30;position:relative;overflow:hidden}.hero:after{content:"D2";position:absolute;right:15px;bottom:-48px;font-size:160px;font-weight:900;color:#ffffff0c;pointer-events:none}.brand{display:inline-flex;background:#ffffffeb;color:var(--g);font-weight:900;letter-spacing:3px;border-radius:30px;padding:4px 18px;font-size:21px}.hero h1{font-size:clamp(25px,6vw,36px);letter-spacing:3px;margin:10px 0 2px}.hero p{color:#e0eee5;margin:0}.hero-links{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.hero-links a{color:white;text-decoration:none;border:1px solid #ffffff65;border-radius:30px;padding:7px 14px;font-weight:700;font-size:13px;background:#ffffff17}
+.nav{display:flex;gap:8px;overflow:auto;padding:3px 1px 12px;position:sticky;top:0;z-index:5;background:#e8f0ebdd;backdrop-filter:blur(15px)}.nav button,.filter button,.action{border:1px solid var(--line);background:#fff;color:var(--g);border-radius:99px;padding:9px 14px;font:inherit;font-weight:700;white-space:nowrap;cursor:pointer}.nav button.active,.filter button.active{background:var(--g);color:#fff;border-color:var(--g)}
+.panel{display:none}.panel.active{display:block}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 14px}.stat,.card,.toolbar,.notice{background:var(--glass);border:1px solid #fff;border-radius:18px;box-shadow:0 7px 22px #1d563a10}.stat{padding:13px}.stat b{display:block;color:var(--g);font-size:24px;line-height:1.2}.stat span{font-size:12px;color:var(--muted)}
+.toolbar{padding:13px;margin-bottom:12px}.search{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font:inherit;background:#fff;color:var(--ink);outline-color:var(--g2)}.filter{display:flex;gap:7px;overflow:auto;margin-top:10px;padding-bottom:2px}.filter button{font-size:12px;padding:7px 12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.route{overflow:hidden}.route summary{list-style:none;padding:15px;cursor:pointer}.route summary::-webkit-details-marker{display:none}.route[open] summary{border-bottom:1px solid var(--line)}.route-title{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.route h3{font-size:17px;margin:0;color:var(--g)}.tag{font-size:11px;padding:3px 9px;border-radius:30px;background:#e4f0e8;color:#286345;white-space:nowrap}.meta{display:flex;gap:15px;flex-wrap:wrap;margin:9px 0 5px}.meta b{display:block;color:var(--g);font-size:17px;line-height:1.2}.meta small{color:var(--muted);font-size:11px}.desc{font-size:13px;color:var(--muted);margin:5px 0}.detail{padding:12px 15px 15px;font-size:13px}.detail p{margin:6px 0}.detail strong{color:var(--g)}.detail .warning{background:#fff3e8;padding:9px;border-radius:10px;color:#80451f}.route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.route-actions a,.route-actions button{flex:1;text-align:center;text-decoration:none;border:0;border-radius:10px;padding:10px;background:var(--g);color:white;font-weight:700;font:inherit;font-size:13px;cursor:pointer}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:10px 2px 12px}.section-head h2{font-size:21px;color:var(--g);margin:0}.muted{color:var(--muted);font-size:12px}.card{padding:15px;margin-bottom:12px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:white;font:inherit;color:var(--ink)}.field.full{grid-column:1/-1}.primary{border:0;background:var(--g);color:white;border-radius:11px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer}.danger{background:#fff0eb;color:#a43e1d;border:1px solid #f0c7b8;border-radius:9px;padding:6px 10px;cursor:pointer}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line)}.table th{color:var(--muted);font-weight:600}.rank{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#e3eee7;color:var(--g);font-weight:800}.empty{padding:20px;text-align:center;color:var(--muted)}.notice{padding:12px 14px;font-size:12px;color:var(--muted);margin:12px 0}.notice strong{color:var(--g)}.footer{text-align:center;color:var(--muted);font-size:11px;padding:18px 5px}
+dialog{border:0;border-radius:20px;padding:20px;max-width:480px;width:calc(100% - 28px);box-shadow:0 20px 70px #102d1f55}dialog::backdrop{background:#102d1f88;backdrop-filter:blur(4px)}dialog h3{margin-top:0;color:var(--g)}.close{float:right;border:0;background:#e7efe9;border-radius:30px;padding:6px 10px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.stats{gap:7px}.stat{padding:10px}.stat b{font-size:21px}.hero{padding:22px 18px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.nav{margin:0 -14px;padding-left:14px;padding-right:14px}.route summary{padding:14px}}
+
+/* Apple-inspired Liquid Glass redesign */
+:root{
+ --g:#173d34;--g2:#287a68;--ink:#182b29;--muted:#6b7d7a;
+ --line:rgba(255,255,255,.58);--bg:#e8efed;--orange:#ef8d58;
+ --glass:rgba(255,255,255,.46)
+}
+html{scroll-behavior:smooth}
+body{
+ background:
+  radial-gradient(ellipse at 8% 4%,rgba(255,255,255,.95),transparent 34%),
+  radial-gradient(ellipse at 92% 16%,rgba(164,211,199,.62),transparent 36%),
+  radial-gradient(ellipse at 55% 90%,rgba(190,207,226,.55),transparent 42%),
+  linear-gradient(145deg,#e9f0ee,#dce7e4 48%,#edf1f4);
+ background-attachment:fixed;
+}
+.wrap{max-width:1080px}
+.hero{
+ color:#183a34;
+ background:linear-gradient(135deg,rgba(255,255,255,.70),rgba(255,255,255,.25));
+ border:1px solid rgba(255,255,255,.82);
+ border-radius:30px;
+ box-shadow:0 22px 60px rgba(31,70,63,.13),inset 0 1px 0 rgba(255,255,255,.95);
+ backdrop-filter:blur(28px) saturate(175%);-webkit-backdrop-filter:blur(28px) saturate(175%);
+}
+.hero:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.55),transparent 42%,rgba(255,255,255,.12));}
+.hero:after{color:rgba(35,100,84,.07)}
+.brand{background:rgba(255,255,255,.72);color:#1b6253;border:1px solid rgba(255,255,255,.9);box-shadow:0 5px 18px rgba(30,75,65,.08)}
+.hero p{color:#59736d}
+.hero-links a{color:#22594e;border:1px solid rgba(255,255,255,.78);background:rgba(255,255,255,.38);backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.8);transition:.2s}
+.hero-links a:hover{background:rgba(255,255,255,.78);transform:translateY(-1px)}
+.nav{
+ top:8px;margin:0 auto 14px;padding:7px;width:max-content;max-width:100%;
+ border:1px solid rgba(255,255,255,.8);border-radius:999px;
+ background:rgba(245,250,248,.55);backdrop-filter:blur(26px) saturate(180%);
+ -webkit-backdrop-filter:blur(26px) saturate(180%);
+ box-shadow:0 10px 30px rgba(35,70,63,.10),inset 0 1px 0 #ffffff;
+}
+.nav button,.filter button,.action{
+ background:rgba(255,255,255,.36);border:1px solid rgba(255,255,255,.65);
+ color:#315d54;box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
+ transition:all .2s ease
+}
+.nav button.active,.filter button.active{
+ background:linear-gradient(135deg,rgba(40,112,94,.92),rgba(27,79,69,.92));
+ color:white;border-color:rgba(255,255,255,.55);
+ box-shadow:0 5px 16px rgba(25,86,72,.22),inset 0 1px 0 rgba(255,255,255,.28)
+}
+.stat,.card,.toolbar,.notice{
+ background:linear-gradient(145deg,rgba(255,255,255,.66),rgba(255,255,255,.30));
+ border:1px solid rgba(255,255,255,.78);border-radius:23px;
+ box-shadow:0 12px 34px rgba(34,69,62,.09),inset 0 1px 0 rgba(255,255,255,.95);
+ backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);
+}
+.stat{position:relative;overflow:hidden}
+.stat:after,.card:after{content:"";position:absolute;pointer-events:none}
+.stat b,.route h3,.meta b,.section-head h2,.detail strong,.notice strong{color:#1c6556}
+.search,.field input,.field select,.field textarea{
+ background:rgba(255,255,255,.48);border:1px solid rgba(255,255,255,.85);
+ box-shadow:inset 0 1px 5px rgba(30,70,60,.045),0 1px 0 rgba(255,255,255,.65);
+ backdrop-filter:blur(12px);border-radius:14px
+}
+.search:focus,.field input:focus,.field select:focus,.field textarea:focus{
+ outline:2px solid rgba(43,137,116,.28);border-color:rgba(55,139,119,.6)
+}
+.tag{background:rgba(71,151,128,.13);color:#286b5c;border:1px solid rgba(255,255,255,.7)}
+.route[open] summary{border-bottom-color:rgba(255,255,255,.7)}
+.route-actions a,.route-actions button,.primary{
+ background:linear-gradient(135deg,#2c806d,#1c5c50);color:#fff;
+ border:1px solid rgba(255,255,255,.42);border-radius:13px;
+ box-shadow:0 7px 18px rgba(30,95,78,.18),inset 0 1px 0 rgba(255,255,255,.25)
+}
+.route-actions a:hover,.route-actions button:hover,.primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.danger{background:rgba(255,238,233,.65);border-color:rgba(255,255,255,.8);backdrop-filter:blur(12px)}
+.rank{background:rgba(66,143,120,.14);border:1px solid rgba(255,255,255,.75)}
+.notice{color:#657a74}
+dialog{
+ background:linear-gradient(145deg,rgba(255,255,255,.91),rgba(241,249,246,.78));
+ border:1px solid rgba(255,255,255,.95);backdrop-filter:blur(28px);
+ box-shadow:0 25px 90px rgba(22,55,48,.25)
+}
+dialog::backdrop{background:rgba(26,55,49,.28);backdrop-filter:blur(12px)}
+.close{background:rgba(220,237,231,.8);color:#285b50}
+.table th,.table td{border-bottom-color:rgba(255,255,255,.75)}
+@media(max-width:650px){
+ .nav{width:100%;justify-content:center;top:5px;gap:4px;padding:5px}
+ .nav button{padding:8px 13px;font-size:13px}
+ .hero{border-radius:25px}
+}
+@media(prefers-reduced-motion:no-preference){
+ .card,.stat,.toolbar,.notice{transition:transform .22s ease,box-shadow .22s ease}
+ .route.card:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(34,69,62,.13),inset 0 1px 0 #fff}
+}
+
+
+#garminFiles{padding:10px;max-width:100%;font-size:13px}
+#garminImport .muted{line-height:1.55}
+#garminImport .primary{cursor:pointer}
+
+
+/* D2 · Liquid Glass system v2 — consistent glass surfaces + sliding pill controls */
+:root{
+  --glass-white:rgba(255,255,255,.48);
+  --glass-edge:rgba(255,255,255,.76);
+  --glass-shadow:0 18px 48px rgba(35,72,65,.105),inset 0 1px 0 rgba(255,255,255,.9);
+  --deep:#1d6758;
+  --deep2:#2f927b;
+  --soft-text:#6a817a;
+  --ease:cubic-bezier(.22,.8,.25,1);
+}
+*{-webkit-tap-highlight-color:transparent}
+body{
+  color:#203b35;
+  background:
+    radial-gradient(ellipse 42rem 34rem at 5% -5%,rgba(255,255,255,.98),transparent 70%),
+    radial-gradient(ellipse 38rem 32rem at 100% 12%,rgba(154,215,199,.48),transparent 68%),
+    radial-gradient(ellipse 36rem 32rem at 58% 100%,rgba(185,202,232,.42),transparent 70%),
+    linear-gradient(145deg,#eaf2ef 0%,#dce9e5 48%,#edf1f5 100%);
+  background-attachment:fixed;
+}
+.wrap{max-width:1120px}
+.hero{
+  isolation:isolate;
+  color:#1b4e43;
+  padding:clamp(23px,4vw,38px);
+  border-radius:34px;
+  border:1px solid rgba(255,255,255,.86);
+  background:
+    radial-gradient(ellipse at 15% 0%,rgba(255,255,255,.9),transparent 52%),
+    linear-gradient(132deg,rgba(255,255,255,.72),rgba(255,255,255,.27));
+  box-shadow:0 24px 70px rgba(30,75,65,.14),inset 0 1px 0 rgba(255,255,255,.98);
+  backdrop-filter:blur(34px) saturate(185%);
+  -webkit-backdrop-filter:blur(34px) saturate(185%);
+}
+.hero:before{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(112deg,rgba(255,255,255,.64),transparent 37%,rgba(255,255,255,.12) 73%,rgba(255,255,255,.4));
+}
+.hero:after{color:rgba(35,111,94,.055);text-shadow:0 2px 18px rgba(255,255,255,.55)}
+.brand{
+  color:#1c6b59;background:rgba(255,255,255,.76);
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 7px 22px rgba(43,94,82,.09),inset 0 1px 0 #fff;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
+}
+.hero h1{color:#173f36;text-shadow:0 1px 0 rgba(255,255,255,.55)}
+.hero p{color:#648179}
+.hero-links a{
+  color:#286859;border:1px solid rgba(255,255,255,.9);
+  background:rgba(255,255,255,.44);border-radius:999px;
+  box-shadow:0 5px 15px rgba(45,88,78,.06),inset 0 1px 0 rgba(255,255,255,.95);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  transition:transform .22s var(--ease),background .22s var(--ease),box-shadow .22s var(--ease)
+}
+.hero-links a:hover{transform:translateY(-2px);background:rgba(255,255,255,.78);box-shadow:0 9px 22px rgba(45,88,78,.12)}
+/* Sliding segmented glass capsule: the active highlight glides under the selected item. */
+.nav,.filter{
+  position:relative;isolation:isolate;
+}
+.nav{
+  display:flex;align-items:center;gap:5px;
+  width:max-content;max-width:100%;margin:0 auto 16px;padding:7px;
+  overflow-x:auto;scrollbar-width:none;
+  border:1px solid rgba(255,255,255,.86);border-radius:999px;
+  background:rgba(247,251,249,.55);
+  box-shadow:0 13px 35px rgba(40,78,69,.12),inset 0 1px 0 #fff;
+  backdrop-filter:blur(30px) saturate(190%);-webkit-backdrop-filter:blur(30px) saturate(190%);
+}
+.nav::-webkit-scrollbar,.filter::-webkit-scrollbar{display:none}
+.nav:before,.filter:before{
+  content:"";position:absolute;z-index:0;pointer-events:none;
+  left:var(--pill-x,0px);top:var(--pill-y,0px);
+  width:var(--pill-w,0px);height:var(--pill-h,0px);
+  border-radius:999px;
+  background:linear-gradient(150deg,rgba(70,157,135,.97),rgba(27,91,77,.96));
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 6px 17px rgba(25,91,76,.22),inset 0 1px 0 rgba(255,255,255,.36),inset 0 -1px 0 rgba(7,56,46,.12);
+  transition:left .34s var(--ease),top .34s var(--ease),width .34s var(--ease),height .34s var(--ease);
+}
+.nav button,.filter button{
+  position:relative;z-index:1;flex:0 0 auto;
+  border:1px solid transparent;background:transparent;color:#426b61;
+  border-radius:999px;font:inherit;font-weight:700;white-space:nowrap;cursor:pointer;
+  box-shadow:none;transition:color .2s ease,transform .2s var(--ease),background .2s ease;
+}
+.nav button{padding:9px 18px}
+.nav button.active,.filter button.active{
+  color:white;background:transparent;border-color:transparent;box-shadow:none
+}
+.nav button:active,.filter button:active{transform:scale(.96)}
+.filter{
+  display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;
+  margin-top:12px;padding:4px 3px 6px;
+}
+.filter button{
+  padding:8px 14px;font-size:12px;
+  background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.52);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.filter button.active{background:transparent;border-color:transparent}
+.panel{animation:glassPanelIn .34s var(--ease) both}
+@keyframes glassPanelIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.stats{gap:12px}
+.stat,.card,.toolbar,.notice{
+  position:relative;
+  border:1px solid var(--glass-edge);border-radius:25px;
+  background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(255,255,255,.30));
+  box-shadow:var(--glass-shadow);
+  backdrop-filter:blur(26px) saturate(175%);-webkit-backdrop-filter:blur(26px) saturate(175%);
+}
+.stat{overflow:hidden;padding:17px}
+.stat:before,.card:before,.toolbar:before,.notice:before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(128deg,rgba(255,255,255,.34),transparent 34%,rgba(255,255,255,.08) 70%,rgba(255,255,255,.18));
+}
+.stat>* ,.card>* ,.toolbar>* ,.notice>*{position:relative}
+.stat b{color:#1c6858;font-size:clamp(23px,3vw,29px);letter-spacing:-.5px}
+.stat span,.muted,.field label{color:var(--soft-text)}
+.toolbar{padding:16px}
+.search,.field input,.field select,.field textarea{
+  color:#23463d;background:rgba(255,255,255,.53);
+  border:1px solid rgba(255,255,255,.88);border-radius:16px;
+  box-shadow:inset 0 1px 5px rgba(35,75,65,.05),0 1px 0 rgba(255,255,255,.75);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  transition:border-color .2s ease,background .2s ease,box-shadow .2s ease;
+}
+.search{padding:14px 16px}
+.field input,.field select,.field textarea{padding:12px 13px}
+.search:focus,.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;background:rgba(255,255,255,.78);
+  border-color:rgba(53,143,120,.58);
+  box-shadow:0 0 0 4px rgba(72,160,135,.12),inset 0 1px 4px rgba(35,75,65,.04)
+}
+.field input::placeholder,.search::placeholder{color:#91a69f}
+input[type="date"],input[type="number"]{accent-color:#328c76}
+#garminFiles{
+  padding:10px;max-width:100%;font-size:13px;
+  border-radius:16px;background:rgba(255,255,255,.43);
+}
+#garminFiles::file-selector-button{
+  border:1px solid rgba(255,255,255,.85);border-radius:999px;
+  padding:8px 13px;margin-right:10px;color:#286a59;
+  background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(225,242,236,.7));
+  box-shadow:0 3px 10px rgba(37,89,75,.08);font-weight:700
+}
+.tag{
+  border:1px solid rgba(255,255,255,.78);
+  color:#286b5c;background:rgba(96,173,148,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+  backdrop-filter:blur(10px)
+}
+.route h3,.meta b,.section-head h2,.detail strong,.notice strong{color:#1c6858}
+.route summary{padding:17px}
+.route[open] summary{border-bottom-color:rgba(255,255,255,.78)}
+.route .detail{padding:15px 17px 18px}
+.detail .warning{
+  background:rgba(255,238,220,.52);border:1px solid rgba(255,255,255,.8);
+  border-radius:15px;color:#805b3e;backdrop-filter:blur(12px)
+}
+button,.primary,.action,.danger,.close,.route-actions a,.route-actions button{
+  -webkit-appearance:none;appearance:none;cursor:pointer;
+  transition:transform .2s var(--ease),filter .2s ease,box-shadow .2s ease,background .2s ease
+}
+.primary,.route-actions a,.route-actions button{
+  color:#fff;border:1px solid rgba(255,255,255,.48);border-radius:999px;
+  background:linear-gradient(145deg,rgba(61,151,128,.98),rgba(28,94,79,.98));
+  box-shadow:0 8px 20px rgba(30,99,82,.19),inset 0 1px 0 rgba(255,255,255,.30);
+  font-weight:700;padding:11px 18px
+}
+.primary:hover,.route-actions a:hover,.route-actions button:hover{
+  transform:translateY(-2px);filter:brightness(1.05);
+  box-shadow:0 12px 25px rgba(30,99,82,.23),inset 0 1px 0 rgba(255,255,255,.35)
+}
+.primary:active,.route-actions a:active,.route-actions button:active{transform:scale(.97)}
+.danger,.close{
+  color:#9a5142;background:rgba(255,244,240,.58);
+  border:1px solid rgba(255,255,255,.86);border-radius:999px;
+  box-shadow:0 4px 12px rgba(110,64,48,.06),inset 0 1px 0 rgba(255,255,255,.8);
+}
+.danger{padding:7px 12px}
+.danger:hover,.close:hover{background:rgba(255,255,255,.88);transform:translateY(-1px)}
+.rank{
+  background:linear-gradient(145deg,rgba(119,192,166,.30),rgba(255,255,255,.44));
+  border:1px solid rgba(255,255,255,.88);color:#226a58;
+  box-shadow:inset 0 1px 0 #fff,0 3px 8px rgba(30,80,65,.06)
+}
+.table{min-width:520px;border-collapse:separate;border-spacing:0;font-size:13px}
+.table th,.table td{padding:12px 9px;border-bottom:1px solid rgba(255,255,255,.72)}
+.table th{color:#70877f}
+#recordList,#leaderboard{overflow-x:auto}
+#recordList .table tr:last-child td,#leaderboard .table tr:last-child td{border-bottom:0}
+.empty{color:#718780;padding:25px 15px}
+.notice{line-height:1.7;padding:15px 18px;color:#6e827b}
+.section-head{margin:14px 3px 15px}
+.section-head h2{letter-spacing:-.4px}
+dialog{
+  color:#24473e;border:1px solid rgba(255,255,255,.92);border-radius:28px;
+  background:linear-gradient(145deg,rgba(255,255,255,.91),rgba(235,247,242,.78));
+  box-shadow:0 28px 90px rgba(25,63,53,.24),inset 0 1px 0 #fff;
+  backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%)
+}
+dialog::backdrop{background:rgba(22,55,47,.25);backdrop-filter:blur(14px)}
+.close{float:right;padding:7px 14px}
+.footer{color:#80948d}
+@media(max-width:650px){
+  body{padding-left:12px;padding-right:12px}
+  .hero{border-radius:28px}
+  .nav{width:100%;justify-content:flex-start;margin-left:0;margin-right:0}
+  .nav button{padding:9px 15px;font-size:13px}
+  .stats{gap:8px}
+  .stat{padding:13px 10px;border-radius:20px}
+  .toolbar,.card,.notice{border-radius:21px}
+  .filter{margin-right:-3px}
+  .table{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+}
+
+</style></head>
+<body><div class="wrap">
+<header class="hero"><span class="brand">D2 车队</span><h1>北京骑行路线集</h1><p>D2 CYCLING · ROUTES / RIDE LOG</p><div class="hero-links"><a href="strava://">打开 Strava</a><a href="#" id="aboutBtn">关于 D2</a></div></header>
+<nav class="nav"><button class="active" data-tab="routes">路线库 · 50</button><button data-tab="records">骑行记录</button><button data-tab="rank">骑行排行</button></nav>
+<section id="routes" class="panel active">
+<div class="stats"><div class="stat"><b id="routeCount">50</b><span>收录路线</span></div><div class="stat"><b>5</b><span>路线类型</span></div><div class="stat"><b>北京</b><span>覆盖区域</span></div></div>
+<div class="toolbar"><input class="search" id="search" placeholder="搜索路线名称、区域或关键词…"><div class="filter" id="filters"><button class="active" data-kind="全部">全部</button><button data-kind="爬坡">公路爬坡</button><button data-kind="风景">郊野风景</button><button data-kind="绿道">城市绿道</button><button data-kind="耐力">长距离耐力</button><button data-kind="训练">训练绕圈</button></div></div>
+<div class="grid" id="routeGrid"></div>
+<div class="notice"><strong>数据说明：</strong>路线库包含官方公开线路、经典骑友路书及可组合的区域骑行建议。没有可靠轨迹来源的里程/爬升标为“待实测”或区间估算，不代表已验证 GPX 轨迹。道路通行、施工、景区管理及自行车禁行规定可能变化，出发前请核对现场标识和导航。</div>
+</section>
+<section id="records" class="panel">
+<div class="section-head"><h2>骑行活动记录</h2><span class="muted">里程 · 爬升 · 骑行者</span></div>
+
+<div class="card" id="garminImport">
+  <h3 style="margin:0 0 8px;color:var(--g)">导入佳明骑行数据</h3>
+  <p class="muted" style="margin:0 0 12px">从 Garmin Connect 中国版导出活动文件，再导入这里。支持 GPX、TCX 和活动 CSV；可一次选择多个文件。</p>
+  <div class="formgrid">
+    <div class="field"><label>骑行者昵称 *</label><input id="importRider" maxlength="24" placeholder="例如：D2-小明"></div>
+    <div class="field"><label>选择佳明导出文件</label><input id="garminFiles" type="file" accept=".gpx,.tcx,.csv,application/gpx+xml,application/vnd.garmin.tcx+xml,text/csv" multiple></div>
+  </div>
+  <p style="margin:10px 0 0"><button class="primary" type="button" id="importBtn">导入选中的骑行记录</button></p>
+  <p class="muted" id="importStatus" aria-live="polite" style="margin:9px 0 0">提示：导入前先填写骑行者昵称；GPX/TCX 会根据轨迹点估算里程和爬升，CSV 优先读取佳明汇总数据。</p>
+</div>
+
+<form class="card" id="recordForm"><h3 style="margin:0 0 10px;color:var(--g)">登记一次骑行</h3><div class="formgrid"><div class="field"><label>骑行日期 *</label><input name="date" type="date" required></div><div class="field"><label>活动 / 路线名称 *</label><input name="route" required placeholder="例如：妙峰山拉练"></div><div class="field"><label>骑行者昵称 *</label><input name="rider" required maxlength="24" placeholder="例如：D2-小明"></div><div class="field"><label>骑行里程（km）*</label><input name="km" type="number" min="0" step=".1" required></div><div class="field"><label>累计爬升（m）</label><input name="up" type="number" min="0" step="1" value="0"></div><div class="field"><label>备注</label><input name="note" placeholder="天气、均速、活动说明"></div></div><p style="margin:10px 0 0"><button class="primary">＋ 保存骑行记录</button></p></form>
+<div class="card"><h3 style="margin:0 0 8px;color:var(--g)">最近活动</h3><div id="recordList" class="empty">暂无骑行记录。</div></div>
+</section>
+<section id="rank" class="panel"><div class="section-head"><h2>D2 骑行排行榜</h2><span class="muted">按累计里程排序</span></div><div class="card" id="leaderboard"></div><div class="notice">排行榜按骑行者昵称汇总本机录入的骑行记录。当前数据保存在此浏览器中，多设备共享需部署云端版本。</div></section>
+<footer class="footer">D2 CYCLING · RIDE TOGETHER, RIDE STRONGER<br>安全骑行，佩戴头盔，遵守交通法规，量力而行。</footer>
+</div>
+<dialog id="about"><button class="close" id="closeAbout">关闭</button><h3>D2 车队介绍</h3><p>D2 车队成立于 2026 年 6 月，是车友自发组建的公路骑行小团体。车队战车包含 Cannondale SuperSix、Specialized Tarmac SL8、喜德盛 X-LAB RS9。我们兼顾竞速拉练与休闲约骑，氛围轻松友好，拒绝内卷。</p><p class="muted">本网站为 D2 车队路线与骑行数据管理工具，支持导入 Garmin Connect 活动文件。</p></dialog>
+<script>
+const routes=[
+["戒台寺爬坡","门头沟","爬坡","4.7 km 单程","213 m","中级","戒台寺牌楼","戒台寺","经典短坡，弯道密集，适合练习爬坡节奏。","弯道多，节假日注意游客、大巴及横穿行人。","turn0"],
+["妙峰山经典爬坡","门头沟","爬坡","19.7 km 单程","约868 m","硬核","涧沟村牌楼","妙峰山景区山顶","北京代表性长爬坡，前缓后陡，持续考验耐力。","山路弯多，留意大车；下坡控速，备风衣。","turn0"],
+["潭王路","门头沟","爬坡","约29.7 km","约558 m","中高级","檀谷·慢闪公园","王平镇","官方精品骑行线路，途经潭柘寺、十字道等。","车辆往来及弯道较多，注意补给和返程体力。","turn0"],
+["京西小老鼠环线","门头沟","耐力","约78–100 km","约920–1000 m","进阶","首钢大桥","首钢大桥（环线）","串联京西经典路段，路线轨迹形似小老鼠。","距离和爬升因版本不同，务必下载并核对轨迹。","turn0"],
+["天线小老鼠","门头沟","耐力","约115 km","约1900 m","硬核","首钢大桥","首钢大桥（环线）","在小老鼠基础上增加妙峰山等爬坡路段。","长距离高爬升，备足补给并预留日落时间。","turn0"],
+["红井路爬坡","房山","爬坡","约19 km 单程","约650 m","中高级","红井路口","红井路山顶方向","连续发卡弯，爬坡节奏变化丰富。","视野受限，严禁压线和高速下坡。","turn0"],
+["黑峪口—白河堡","延庆","爬坡","爬坡段约5 km","约300 m","中级","黑峪口村路口","垭口 / 白河堡水库方向","昌赤路经典短坡，垭口可远眺水库。","前段坡度较陡，注意大车和弯道。","turn0"],
+["大杨山环线","昌平","风景","主爬坡约14.4 km；环线约40–100 km","主爬坡约285 m","中级休闲","大杨山森林公园附近","按环线方案返回","林荫较多、坡度相对平缓，适合郊野骑行。","乡道可能有坑洼、落叶，出发前确认环线方案。","turn0"],
+["老山环线","石景山","训练","3.9 km / 圈","41 m / 圈","入门","老山教练场环行路","老山教练场环行路","短圈训练路线，适合热身、恢复和控车练习。","留意行人及其他训练者，遵守场地管理规定。","turn0"],
+["京西大翅膀","门头沟","耐力","约140 km","约2780 m","硬核","门头沟城区 / 首钢方向","环线","京西长距离高爬升挑战路线，适合有经验车手。","数据随轨迹版本变化，必须使用可靠 GPX。","turn0"],
+["永定楼—妙峰山","门头沟","爬坡","约70–90 km 往返","待实测","进阶","永定楼","妙峰山顶","经三家店水库、担礼隧道接妙峰山牌楼。","隧道及山路注意照明、车流和弯道。","turn0"],
+["东方红隧道爬坡","门头沟","爬坡","爬坡约4 km","约195 m","中级","富水峪桥","东方红隧道前","109国道沿线短爬坡训练段。","国道大车较多，靠右骑行，不在隧道内停留。","turn0"],
+["潭柘寺—戒台寺","门头沟","风景","约30–55 km","待实测","中级","潭柘寺镇","戒台寺","古寺与京西山路组合，可按体力调整。","景区周边游客车多，核对自行车通行规定。","turn0"],
+["京昆路—周口店","房山","风景","约60–90 km","待实测","中级","良乡方向","周口店遗址周边","由城区向西南延伸，适合历史文化主题骑行。","部分路段车流较大，避免高峰时段。","turn0"],
+["周口店—云居寺","房山","风景","约70–100 km","待实测","进阶","周口店","云居寺","串联周口店、山前村镇与云居寺方向。","山区路段补给有限，提前规划返程。","turn0"],
+["十渡山水线","房山","风景","约100–150 km","待实测","进阶","房山城区 / 良乡","十渡风景区","沿拒马河方向欣赏峡谷山水，适合长途骑游。","节假日车流大，景区道路注意行人和旅游车辆。","turn0"],
+["长沟—张坊—十渡","房山","耐力","约100–130 km","待实测","进阶","长沟镇","十渡镇","经典房山南部长距离线路，可组合多个村镇。","距离较长，补给点和返程交通提前确认。","turn0"],
+["石经山爬坡","房山","爬坡","待实测","待实测","中级","云居寺 / 石经山附近","石经山方向","房山山前爬坡训练备选路线。","请先用地图核对具体可骑道路及景区限制。","turn0"],
+["卢沟桥—宛平城","丰台","风景","约20–35 km","待实测","入门","卢沟桥","宛平城","城市人文休闲线，可串联抗战纪念设施周边。","景区步行区域不可骑行时请下车推行。","turn0"],
+["永定河滨水绿道","丰台/门头沟","绿道","约20–50 km（分段）","待实测","入门","永定河沿线入口","按绿道开放段折返","滨水休闲路线，适合轻松骑游。","绿道分段管理，确认开放时间及自行车通行规则。","turn0"],
+["三山五园绿道","海淀","绿道","约20–35 km","待实测","入门","海淀公园","西山国家森林公园周边","串联海淀公园、北坞、玉泉山、香山方向。","部分公园内部道路限行，按现场标识骑行。","turn0"],
+["海淀公园—北坞—香山","海淀","风景","约20–30 km","待实测","入门","海淀公园","香山公园周边","适合城市绿道与西山景观结合的休闲路线。","公园入口和内部道路需确认自行车政策。","turn0"],
+["温榆河滨水绿道","朝阳/顺义","绿道","约30–60 km（分段）","待实测","入门","温榆河沿线入口","按绿道开放段折返","滨水绿道，适合平路耐力与休闲骑行。","注意行人、支路交汇及绿道开放区间。","turn0"],
+["奥林匹克森林公园绕圈","朝阳","训练","约5–10 km / 圈（按路线）","低","入门","奥森北园入口","奥森北园入口","城市公园周边休闲训练选择。","园内道路有管理规定，不能骑行的区域勿进入。","turn0"],
+["环十三陵水库","昌平","风景","约15–18 km 环线","约50–120 m","入门","十三陵水库周边","十三陵水库周边","经典湖库环线，路程适中，适合休闲和恢复骑。","部分路段有机动车，留意景区交通管制。","turn0"],
+["蟒山—十三陵水库","昌平","风景","约25–40 km","待实测","中级","蟒山国家森林公园附近","十三陵水库","山林与水库景观组合，适合周末骑游。","景区道路可能限行，提前确认入口和绕行方案。","turn0"],
+["十三陵—永宁","昌平/延庆","耐力","约50–75 km","待实测","进阶","十三陵镇","永宁镇","从明陵区域向延庆永宁方向延伸。","山区路段补给间隔较长，注意天气和返程。","turn0"],
+["安四路—四海镇","昌平/怀柔","爬坡","约70–100 km","待实测","硬核","小汤山","四海镇","小汤山、兴寿、慈悲峪、黄花城至四海镇的经典山路。","连续起伏和弯道较多，注意大车与下坡制动。","turn0"],
+["黄花城水长城方向","怀柔","风景","约50–80 km","待实测","中级","九渡河 / 黄花城方向","黄花城周边","山水与长城景观路线，可结合九渡河。","景区周边游客多，部分路段可能限行。","turn0"],
+["雁栖湖环湖","怀柔","风景","约13–20 km","约150 m（参考）","入门","雁栖湖周边","雁栖湖周边","湖畔风景路线，适合休闲骑游。","环湖道路开放范围以现场管理为准。","turn0"],
+["雁栖湖—九渡河","怀柔","耐力","约35–55 km","待实测","中级","雁栖湖国际会展中心附近","九渡河镇","从雁栖湖向九渡河延伸，兼顾湖景和山路。","注意范崎路车流、弯道及旅游大巴。","turn0"],
+["白河堡水库环线","延庆","风景","约25–45 km","待实测","中级","白河堡水库","白河堡水库","高海拔水库景观路线，适合夏季避暑骑行。","气温低、风大，补给稀少；确认道路开放情况。","turn0"],
+["百里山水画廊","延庆","耐力","约100–130 km","约800 m（路线版本差异）","进阶","十三陵 / 永宁方向","千家店 / 琉璃庙方向","串联永宁、白河堡、千家店、汤河口等山水景观。","山区路段长、补给少，尽量结伴并早出发。","turn0"],
+["妫河生态走廊","延庆","绿道","约20–40 km","待实测","入门","延庆城区","北京世园公园方向","沿妫河生态廊道骑行，适合休闲与观景。","确认绿道连续开放段，注意行人和交叉口。","turn0"],
+["野鸭湖湿地周边","延庆","风景","约20–40 km","待实测","入门","野鸭湖周边","西湖南岸方向","湿地与湖泊景观路线，适合观鸟与慢骑。","保护区内部道路可能禁骑，遵守生态保护规定。","turn0"],
+["永宁—千家店","延庆","耐力","约60–90 km","待实测","进阶","永宁镇","千家店镇","延庆东北方向山水长途路线。","山路多、补给点少，注意返程和天气。","turn0"],
+["千家店—汤河口","延庆/怀柔","风景","约40–65 km","待实测","进阶","千家店镇","汤河口镇","百里山水画廊东段延伸路线。","弯道、隧道和旅游车辆较多，做好灯光防护。","turn0"],
+["黑龙潭—京都第一瀑方向","密云","风景","约40–70 km","待实测","中级","密云城区","景区外围开放道路","山谷景观路线，可按开放道路规划折返。","景区内部及部分山路可能限制骑行。","turn0"],
+["古北口—司马台方向","密云","风景","约40–70 km","待实测","中级","古北口镇","司马台长城景区外围","历史古镇与山地景观结合的骑游建议。","景区周边道路复杂，勿骑入游客步行区。","turn0"],
+["潮白河绿道","顺义/通州","绿道","约20–60 km（分段）","待实测","入门","潮白河沿线入口","按开放绿道折返","河岸平路，适合基础耐力和休闲骑行。","留意堤顶道路管理、行人及非机动车混行。","turn0"],
+["顺义新城滨河森林公园","顺义","绿道","约15–30 km","待实测","入门","顺义新城滨河森林公园","公园周边折返","城市滨河公园休闲骑行路线。","按公园开放道路骑行，避免人流密集时段。","turn0"],
+["通州大运河绿道","通州","绿道","约20–40 km","待实测","入门","漕运码头","运河文化广场 / 柳荫广场","沿大运河串联城市滨水景观。","公园步行区请下车推行，遵守绿道管理。","turn0"],
+["温榆河—通州运河连接线","顺义/通州","耐力","约40–70 km","待实测","中级","温榆河沿线","通州运河沿线","连接北部滨水廊道与大运河方向的长距离建议。","具体连通道路需导航规划，避免高速和禁行路段。","turn0"],
+["城市滨水绿道西线","西城/丰台","绿道","约20–35 km","待实测","入门","木樨地","永定门公园方向","白云观、天宁寺、滨河公园、陶然亭一线的人文绿道组合。","城市路口多，注意信号灯、行人与公交车辆。","turn0"],
+["什刹海—钟鼓楼城市线","东城/西城","风景","约8–15 km","低","入门","钟鼓楼","什刹海 / 银锭桥","京味文化短途路线，适合城市慢骑。","胡同及景区人流密集，部分区域需下车推行。","turn0"],
+["南海子公园周边","大兴","风景","约15–30 km","低","入门","南海子公园外围","南海子公园外围","南城休闲骑行选择，适合轻松骑游。","公园内骑行规则以现场公告为准。","turn0"],
+["凉水河滨水线","大兴/丰台","绿道","约20–45 km","待实测","入门","凉水河沿线开放入口","按开放段折返","南部滨水骑行线路建议。","绿道连续性及可骑路段需提前核实。","turn0"],
+["首钢园—永定河大桥","石景山/门头沟","训练","约15–30 km","低","入门","首钢园外围","永定河大桥周边","城市工业景观与河岸道路组合，适合短途训练。","景区内部道路及桥梁非机动车通行规定需现场确认。","turn0"],
+["模式口—三家店水库","石景山/门头沟","风景","约25–45 km","待实测","中级","模式口","三家店水库周边","由城市西部向京西山前延伸的路线建议。","山区道路弯多，避免在隧道口和桥面停留。","turn0"],
+["军庄—妙峰山牌楼","门头沟","爬坡","约35–55 km 往返","待实测","进阶","军庄方向","妙峰山牌楼","经典妙峰山爬坡前的接近路线，可做分段训练。","城市接近段车流大，爬坡段注意补水和下坡。","turn0"]
+];
+const $=s=>document.querySelector(s), esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function renderRoutes(){let q=$("#search").value.trim().toLowerCase(),kind=$(".filter .active").dataset.kind;let list=routes.filter(r=>(kind==="全部"||r[2]===kind)&&r.join(" ").toLowerCase().includes(q));$("#routeCount").textContent=list.length;$("#routeGrid").innerHTML=list.map((r,i)=>`<details class="card route"><summary><div class="route-title"><h3>${esc(r[0])}</h3><span class="tag">${esc(r[5])}</span></div><div class="meta"><div><b>${esc(r[3])}</b><small>参考里程</small></div><div><b>${esc(r[4])}</b><small>累计爬升</small></div></div><p class="desc">${esc(r[1])} · ${esc(r[2])} · ${esc(r[8])}</p><span class="muted">点击查看路书详情 ↓</span></summary><div class="detail"><p><strong>区域：</strong>${esc(r[1])}</p><p><strong>起点建议：</strong>${esc(r[6])}</p><p><strong>终点建议：</strong>${esc(r[7])}</p><p><strong>路线介绍：</strong>${esc(r[8])}</p><p class="warning"><strong>安全提醒：</strong>${esc(r[9])}</p><div class="route-actions"><a target="_blank" rel="noopener" href="https://uri.amap.com/search?keyword=${encodeURIComponent(r[6])}&city=${encodeURIComponent("北京")}">高德导航起点</a><button onclick="copyRoute('${esc(r[0])}')">复制路线信息</button></div></div></details>`).join("")||'<div class="empty">没有找到符合条件的路线。</div>'}
+function copyRoute(name){let r=routes.find(x=>x[0]===name);let t=`${r[0]}｜${r[1]}｜${r[3]}｜爬升${r[4]}｜起点：${r[6]}｜终点：${r[7]}`;navigator.clipboard?.writeText(t).then(()=>alert("路线信息已复制")).catch(()=>alert(t))}
+function syncGlassPill(container){
+ if(!container)return;
+ const active=container.querySelector("button.active");
+ if(!active)return;
+ const cr=container.getBoundingClientRect(),br=active.getBoundingClientRect();
+ const x=br.left-cr.left+container.scrollLeft-container.clientLeft;
+ const y=br.top-cr.top-container.clientTop;
+ container.style.setProperty("--pill-x",x+"px");
+ container.style.setProperty("--pill-y",y+"px");
+ container.style.setProperty("--pill-w",br.width+"px");
+ container.style.setProperty("--pill-h",br.height+"px");
+}
+function syncAllGlassPills(){syncGlassPill($(".nav"));syncGlassPill($("#filters"))}
+$("#search").addEventListener("input",renderRoutes);
+$("#filters").addEventListener("click",e=>{
+ let b=e.target.closest("button");if(!b)return;
+ $("#filters").querySelectorAll("button").forEach(x=>x.classList.toggle("active",x===b));
+ syncGlassPill($("#filters"));renderRoutes();
+});
+
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b));
+ document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("active",x.id===b.dataset.tab));
+ syncGlassPill($(".nav"));
+});
+window.addEventListener("resize",syncAllGlassPills);
+$(".nav").addEventListener("scroll",()=>syncGlassPill($(".nav")),{passive:true});
+$("#filters").addEventListener("scroll",()=>syncGlassPill($("#filters")),{passive:true});
+const KEY="d2_cycling_2_1";
+let db=JSON.parse(localStorage.getItem(KEY)||'{"records":[]}');
+/* Migrate records from the previous member-list version, if present. */
+if(!db.records.length){
+ try{
+  const old=JSON.parse(localStorage.getItem("d2_cycling_2_0")||"null");
+  if(old&&Array.isArray(old.records)){
+   db.records=old.records.map(r=>({...r,rider:r.rider||(old.members||[]).find(m=>m.id===r.member)?.name||"未命名骑行者"}));
+  }
+ }catch(e){}
+}
+db.records=db.records.map(r=>({...r,rider:r.rider||"未命名骑行者"}));
+function save(){localStorage.setItem(KEY,JSON.stringify(db));renderRecords();renderRank()}
+$("#recordForm").onsubmit=e=>{
+ e.preventDefault();let f=new FormData(e.target);
+ db.records.unshift({id:crypto.randomUUID(),date:f.get("date"),route:f.get("route").trim(),rider:f.get("rider").trim(),km:Number(f.get("km")),up:Number(f.get("up")||0),note:f.get("note").trim()});
+ e.target.reset();save()
+};
+function renderRecords(){
+ let arr=db.records;
+ $("#recordList").innerHTML=arr.length?`<table class="table"><tr><th>日期 / 路线</th><th>骑行者</th><th>里程</th><th>爬升</th><th></th></tr>${arr.map(r=>`<tr><td>${esc(r.date)}<br><b>${esc(r.route)}</b><br><span class="muted">${esc(r.note)}</span></td><td>${esc(r.rider||"未命名骑行者")}</td><td>${r.km} km</td><td>${r.up} m</td><td><button class="danger" onclick="removeRecord('${r.id}')">删除</button></td></tr>`).join("")}</table>`:'<div class="empty">暂无骑行记录，完成一次骑行后可以在这里登记。</div>'
+}
+function removeRecord(id){if(!confirm("删除这条骑行记录？"))return;db.records=db.records.filter(r=>r.id!==id);save()}
+function renderRank(){
+ let map={};db.records.forEach(r=>{let n=(r.rider||"未命名骑行者").trim();if(!map[n])map[n]={name:n,km:0,up:0,count:0};map[n].km+=Number(r.km)||0;map[n].up+=Number(r.up)||0;map[n].count++});
+ let stats=Object.values(map).sort((a,b)=>b.km-a.km);
+ $("#leaderboard").innerHTML=stats.length?`<table class="table"><tr><th>排名</th><th>骑行者</th><th>累计里程</th><th>累计爬升</th><th>活动</th></tr>${stats.map((x,i)=>`<tr><td><span class="rank">${i+1}</span></td><td><b>${esc(x.name)}</b></td><td>${x.km.toFixed(1)} km</td><td>${x.up} m</td><td>${x.count} 次</td></tr>`).join("")}</table>`:'<div class="empty">登记骑行记录并填写骑行者昵称后，这里会自动生成排行榜。</div>'
+}
+
+function haversineKm(a,b){
+ const rad=x=>x*Math.PI/180, dLat=rad(b.lat-a.lat), dLon=rad(b.lon-a.lon);
+ const h=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;
+ return 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
+}
+function elevationGain(points){
+ let gain=0, prev=null;
+ for(const p of points){if(Number.isFinite(p.ele)){if(prev!==null&&p.ele>prev)gain+=p.ele-prev;prev=p.ele}}
+ return Math.round(gain);
+}
+function parseXml(text){
+ const doc=new DOMParser().parseFromString(text,"application/xml");
+ if(doc.querySelector("parsererror"))throw new Error("文件 XML 格式无法识别");
+ return doc;
+}
+function localTag(el,name){return Array.from(el.getElementsByTagName("*")).find(n=>n.localName===name)}
+function textOf(el,name){const n=localTag(el,name);return n?.textContent?.trim()||""}
+function parseGpx(content,fileName){
+ const doc=parseXml(content), pts=Array.from(doc.getElementsByTagName("*")).filter(n=>n.localName==="trkpt"||n.localName==="rtept");
+ const points=pts.map(n=>({lat:Number(n.getAttribute("lat")),lon:Number(n.getAttribute("lon")),ele:Number(textOf(n,"ele")),time:textOf(n,"time")})).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
+ if(points.length<2)throw new Error("GPX 中没有足够的轨迹点");
+ let km=0;for(let i=1;i<points.length;i++)km+=haversineKm(points[i-1],points[i]);
+ const name=textOf(doc,"name")||fileName.replace(/\.[^.]+$/,"");
+ return {date:(points.find(p=>p.time)?.time||"").slice(0,10),route:name,km:Number(km.toFixed(2)),up:elevationGain(points),note:"由 GPX 轨迹导入（爬升按海拔点估算）"};
+}
+function parseTcx(content,fileName){
+ const doc=parseXml(content);
+ const tracks=Array.from(doc.getElementsByTagName("*")).filter(n=>n.localName==="Trackpoint");
+ const points=tracks.map(n=>{
+   const pos=localTag(n,"Position"), lat=Number(textOf(pos||n,"LatitudeDegrees")), lon=Number(textOf(pos||n,"LongitudeDegrees"));
+   return {lat,lon,ele:Number(textOf(n,"AltitudeMeters")),time:textOf(n,"Time"),dist:Number(textOf(n,"DistanceMeters"))};
+ }).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon));
+ let km=0;
+ if(points.length>1){
+   const lastDist=points.map(p=>p.dist).filter(Number.isFinite).pop();
+   if(Number.isFinite(lastDist)&&lastDist>0)km=lastDist/1000;
+   else for(let i=1;i<points.length;i++)km+=haversineKm(points[i-1],points[i]);
+ }
+ if(!km){
+   const laps=Array.from(doc.getElementsByTagName("*")).filter(n=>n.localName==="Lap");
+   km=laps.reduce((s,n)=>s+(Number(textOf(n,"DistanceMeters"))||0),0)/1000;
+ }
+ if(!km)throw new Error("TCX 中未找到有效里程数据");
+ const activity=Array.from(doc.getElementsByTagName("*")).find(n=>n.localName==="Activity");
+ const route=textOf(activity||doc,"Name")||fileName.replace(/\.[^.]+$/,"");
+ const date=(points.find(p=>p.time)?.time||textOf(doc,"Id")||"").slice(0,10);
+ return {date,route,km:Number(km.toFixed(2)),up:elevationGain(points),note:"由 TCX 导入（爬升按海拔点估算）"};
+}
+function csvRows(text){
+ const lines=text.replace(/^\uFEFF/,"").split(/\r?\n/).filter(x=>x.trim());
+ if(lines.length<2)throw new Error("CSV 没有活动数据");
+ const parseLine=line=>{let out=[],v="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){v+='"';i++}else q=!q}else if(c===","&&!q){out.push(v);v=""}else v+=c}out.push(v);return out};
+ const heads=parseLine(lines[0]).map(x=>x.trim().toLowerCase());
+ return lines.slice(1).map(line=>{const vals=parseLine(line);let o={};heads.forEach((h,i)=>o[h]=vals[i]??"");return o});
+}
+function pickField(row,terms){const k=Object.keys(row).find(k=>terms.some(t=>k===t||k.includes(t)));return k?row[k]:""}
+function parseCsv(content,fileName){
+ const rows=csvRows(content);
+ return rows.map((r,i)=>{
+   const date=pickField(r,["date","日期","开始时间","start time"]);
+   const route=pickField(r,["title","activity name","活动名称","活动类型","name"])||fileName.replace(/\.[^.]+$/,"");
+   const distRaw=pickField(r,["distance","距离","dist"]);
+   let km=Number(String(distRaw).replace(/[^\d.,-]/g,"").replace(",","."));
+   if(!Number.isFinite(km)||km<=0)throw new Error("CSV 第 "+(i+2)+" 行没有可识别的距离");
+   if(/meter|米| m\b/i.test(Object.keys(r).find(k=>k.includes("distance")||k.includes("距离"))||"")||km>1000)km/=1000;
+   const upRaw=pickField(r,["total ascent","elevation gain","ascent","总爬升","累计爬升","爬升"]);
+   const up=Number(String(upRaw||"0").replace(/[^\d.-]/g,""))||0;
+   return {date:String(date||"").slice(0,10),route,km:Number(km.toFixed(2)),up:Math.round(up),note:"由 Garmin Connect CSV 导入"};
+ });
+}
+async function importGarminFiles(){
+ const rider=$("#importRider").value.trim(), files=Array.from($("#garminFiles").files||[]);
+ if(!rider){alert("请先填写骑行者昵称");return}
+ if(!files.length){alert("请先选择 GPX、TCX 或 CSV 文件");return}
+ const status=$("#importStatus");let added=0,errors=[];
+ for(const file of files){
+  try{
+   const content=await file.text(), ext=file.name.split(".").pop().toLowerCase();
+   let entries=[];
+   if(ext==="gpx")entries=[parseGpx(content,file.name)];
+   else if(ext==="tcx")entries=[parseTcx(content,file.name)];
+   else if(ext==="csv")entries=parseCsv(content,file.name);
+   else throw new Error("暂不支持此文件格式");
+   for(const x of entries){
+    db.records.unshift({id:crypto.randomUUID(),date:x.date||new Date(file.lastModified||Date.now()).toISOString().slice(0,10),route:x.route||file.name,rider,km:x.km,up:x.up||0,note:x.note||"Garmin 数据导入"});
+    added++;
+   }
+  }catch(err){errors.push(file.name+"："+err.message)}
+ }
+ if(added)save();
+ status.textContent=`成功导入 ${added} 条骑行记录。`+(errors.length?" 未导入："+errors.join("；"):"");
+ $("#garminFiles").value="";
+}
+$("#importBtn").addEventListener("click",importGarminFiles);
+
+$("#aboutBtn").onclick=e=>{e.preventDefault();$("#about").showModal()};$("#closeAbout").onclick=()=>$("#about").close();
+renderRoutes();renderRecords();renderRank();requestAnimationFrame(syncAllGlassPills);
+</script></body></html>
